@@ -1,85 +1,92 @@
-export default async function handler(req, res) {
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+export async function handler(event) {
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" })
+    };
   }
 
   try {
-    const { prompt } = req.body;
+    const { prompt } = JSON.parse(event.body || "{}");
 
     if (!prompt) {
-      return res.status(400).json({ error: 'Prompt is required' });
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing prompt" })
+      };
     }
 
-    // Get API key from environment variable
     const apiKey = process.env.GEMINI_API_KEY;
-    
-    if (!apiKey) {
-      return res.status(500).json({ error: 'API key not configured' });
-    }
 
-    // Call Google Gemini API
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    const geminiResponse = await fetch(
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
+        apiKey,
       {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [
             {
+              role: "user",
               parts: [
                 {
-                  text: prompt
+                  text: `
+You are a veterinary clinician writing a formal clinical report.
+
+TASK:
+Using established veterinary references (e.g. Merck Veterinary Manual, BSAVA Manuals):
+
+1. Write a concise Case Summary.
+2. Provide Differential Diagnoses with justification.
+3. Recommend Diagnostic Steps.
+4. Identify Red Flags.
+5. Suggest Initial Treatment.
+6. Cite references clearly.
+
+IMPORTANT:
+- Do not repeat the input verbatim.
+- Apply clinical reasoning.
+
+CASE DATA:
+${prompt}
+                  `
                 }
               ]
             }
           ],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 8192,
+            temperature: 0.4,
+            maxOutputTokens: 2048
           }
         })
       }
     );
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('Gemini API Error:', error);
-      return res.status(response.status).json({ 
-        error: error.error?.message || 'API error' 
-      });
+    const data = await geminiResponse.json();
+
+    const text =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          text: "No clinical report could be generated."
+        })
+      };
     }
 
-    const data = await response.json();
-    
-    // Extract text from Gemini's response format
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
-    
-    // Format response to match the expected structure in frontend
-    return res.status(200).json({
-      content: [
-        {
-          type: 'text',
-          text: text
-        }
-      ]
-    });
-
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    };
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Function error:", error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal server error" })
+    };
   }
 }
