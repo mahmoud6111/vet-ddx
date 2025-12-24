@@ -233,7 +233,8 @@ if (!response.ok) {
 }
 
       const data = await response.json();
-      const resultText = data.text;
+      const resultText = data.content?.[0]?.text
+;
 
 if (!resultText) {
   throw new Error("Empty response from server");
