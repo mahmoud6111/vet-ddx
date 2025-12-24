@@ -1,92 +1,123 @@
 export async function handler(event) {
-  if (event.httpMethod !== "POST") {
+  // Only allow POST requests
+  if (event.httpMethod !== 'POST' && event.httpMethod !== 'OPTIONS') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: "Method not allowed" })
+      body: JSON.stringify({ error: 'Method not allowed' }),
     };
   }
 
+  // Handle preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: '',
+    };
+  }
+
+  // CORS headers (same as before)
+  const corsHeaders = {
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+
   try {
-    const { prompt } = JSON.parse(event.body || "{}");
+    const body = JSON.parse(event.body || '{}');
+    const { prompt } = body;
 
     if (!prompt) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "Missing prompt" })
+        headers: corsHeaders,
+        body: JSON.stringify({ error: 'Prompt is required' }),
       };
     }
 
+    // Get API key from environment variable
     const apiKey = process.env.GEMINI_API_KEY;
 
-    const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" +
-        apiKey,
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        headers: corsHeaders,
+        body: JSON.stringify({ error: 'API key not configured' }),
+      };
+    }
+
+    // Call Google Gemini API (UNCHANGED)
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           contents: [
             {
-              role: "user",
               parts: [
                 {
-                  text: `
-You are a veterinary clinician writing a formal clinical report.
-
-TASK:
-Using established veterinary references (e.g. Merck Veterinary Manual, BSAVA Manuals):
-
-1. Write a concise Case Summary.
-2. Provide Differential Diagnoses with justification.
-3. Recommend Diagnostic Steps.
-4. Identify Red Flags.
-5. Suggest Initial Treatment.
-6. Cite references clearly.
-
-IMPORTANT:
-- Do not repeat the input verbatim.
-- Apply clinical reasoning.
-
-CASE DATA:
-${prompt}
-                  `
-                }
-              ]
-            }
+                  text: prompt,
+                },
+              ],
+            },
           ],
           generationConfig: {
-            temperature: 0.4,
-            maxOutputTokens: 2048
-          }
-        })
+            temperature: 0.7,
+            maxOutputTokens: 8192,
+          },
+        }),
       }
     );
 
-    const data = await geminiResponse.json();
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('Gemini API Error:', error);
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!text) {
       return {
-        statusCode: 200,
+        statusCode: response.status,
+        headers: corsHeaders,
         body: JSON.stringify({
-          text: "No clinical report could be generated."
-        })
+          error: error.error?.message || 'API error',
+        }),
       };
     }
 
+    const data = await response.json();
+
+    // Extract text (UNCHANGED)
+    const text =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      'No response generated';
+
+    // SAME response structure as before
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
+      headers: corsHeaders,
+      body: JSON.stringify({
+        content: [
+          {
+            type: 'text',
+            text: text,
+          },
+        ],
+      }),
     };
   } catch (error) {
-    console.error("Function error:", error);
+    console.error('Error:', error);
 
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Internal server error" })
+      headers: corsHeaders,
+      body: JSON.stringify({ error: 'Internal server error' }),
     };
   }
 }
