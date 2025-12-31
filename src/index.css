@@ -1,3 +1,64 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom animations for diagnosis probability cards */
+@keyframes growWidth {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: var(--target-width, 100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+/* Probability bar animation */
+.probability-bar {
+  animation: growWidth 1s ease-out forwards;
+}
+
+/* Treatment accordion content styling */
+.prose {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.prose strong {
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Ensure text wraps in accordion */
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}

@@ -234,18 +234,88 @@ ANTI-DIARRHEAL:
 - Kaolin (Kapect®): 0.5-1 ml/kg q6-8h
 - Nifuroxazide (Antinal®): 4.4 mg/kg q8h
 
-=== ALTERNATIVE TREATMENTS ===
-If the PRIMARY drugs above are not suitable for this specific case, you MAY suggest alternative medications. When suggesting alternatives:
-- Clearly mark them as "🔄 ALTERNATIVE:" 
-- Explain WHY the alternative is needed
-- Provide full dosing information
-- Note if the drug may need to be specially ordered
+=== SMART TREATMENT SELECTION ===
+IMPORTANT: Before recommending ANY drug, you MUST evaluate if it's appropriate for THIS specific case.
+
+⚠️ CONTRAINDICATION CHECK (DO THIS FOR EVERY DRUG):
+1. **Species-specific**: Is this drug safe for ${formData.species}? (e.g., NEVER paracetamol in cats)
+2. **Age-related**: Is this safe for a ${formData.age} animal? (e.g., NSAIDs caution in very young/old)
+3. **Condition-related**: Does the presenting problem contraindicate this drug?
+   - Vomiting → Oral medications may not be absorbed (prefer IV/SC)
+   - Kidney disease suspected → Avoid nephrotoxic drugs, adjust doses
+   - Liver disease suspected → Avoid hepatotoxic drugs, adjust doses
+   - Dehydration → NSAIDs may worsen renal perfusion
+   - GI bleeding suspected → Avoid NSAIDs
+4. **Drug interactions**: Are there conflicts with other recommended drugs?
+
+IF a PRIMARY drug is NOT suitable:
+- ❌ State clearly: "PRIMARY [Drug] NOT RECOMMENDED because: [reason]"
+- 🔄 Then suggest: "ALTERNATIVE: [Drug] - [why this is better for this case]"
+
+=== WHEN TO SUGGEST ALTERNATIVES ===
+You SHOULD suggest alternative medications when:
+1. The presenting condition contraindicates a primary drug
+2. Species/age makes a primary drug unsafe
+3. A more effective drug exists for this specific diagnosis
+4. Drug interactions would occur
+
+⚠️ ALTERNATIVE DRUG PRIORITY ORDER:
+1. **FIRST**: Choose another drug from the Egypt-available PRIMARY list above
+   - Example: If Meloxicam is contraindicated, use Ketoprofen instead (both in Egypt list)
+   - Example: If Ondansetron unavailable, use Metoclopramide (both in Egypt list)
+   
+2. **SECOND**: Only if NO suitable Egypt-available alternative exists:
+   - MUST source from **BSAVA Small Animals Formulary** ONLY
+   - Mark clearly: "⚠️ NOT IN EGYPT LIST - Ref: BSAVA Formulary"
+   - Include BSAVA page/section reference if possible
+   - Use EXACT dosing from BSAVA Formulary
+   - Explain why no Egypt-available option works for this case
+   - Note: "May require import or special ordering from veterinary supplier"
+
+When suggesting alternatives:
+- Mark with: "🔄 ALTERNATIVE (instead of [Primary Drug]):"
+- Explain: "Reason: [why primary is not suitable]"
+- State: "Availability: ✅ Egypt-available" OR "⚠️ BSAVA Formulary - Special order"
+- Reference: Include "(BSAVA Formulary)" for non-Egypt drugs
+- Provide full dosing with calculation
 
 === REQUIRED OUTPUT FORMAT ===
 Structure your response with these EXACT section headers:
 
 ## 🔍 DIFFERENTIAL DIAGNOSES
-[List ranked differentials with likelihood percentages and Merck/BSAVA references]
+IMPORTANT: For each differential, use this EXACT format (one per line):
+[PERCENTAGE]% | [SPECIFIC DIAGNOSIS NAME] | [Complete clinical reasoning with Merck/BSAVA reference]
+
+⚠️ CRITICAL REQUIREMENTS FOR DIAGNOSIS NAMES:
+- Use SPECIFIC pathogen/etiology names, NOT generic terms
+- BAD: "Viral Gastroenteritis" or "Bacterial Infection"
+- GOOD: "Feline Panleukopenia Virus (Feline Parvovirus)" or "Campylobacter jejuni Enteritis"
+- BAD: "Parasitic Disease"
+- GOOD: "Toxoplasma gondii" or "Giardia duodenalis" or "Isospora felis Coccidiosis"
+- Include the EXACT pathogen, virus, bacteria, or specific condition name
+- For metabolic diseases: specify the exact condition (e.g., "Hepatic Lipidosis" not "Liver Disease")
+
+⚠️ CRITICAL REQUIREMENTS FOR DESCRIPTIONS:
+- Provide COMPLETE clinical reasoning - do NOT truncate or abbreviate
+- Explain WHY this diagnosis fits the presenting signs
+- Include relevant epidemiology (age, breed predisposition)
+- Reference pathognomonic signs if present
+- Include mortality/prognosis concerns if relevant
+- Minimum 2-3 sentences per differential
+
+CRITICAL FORMATTING RULES:
+- Percentages represent RELATIVE clinical likelihood given the presenting signs
+- Use a WIDE range from 5% to 95% (most likely diagnosis should be 60-90%)
+- Do NOT use 0% unless truly impossible
+- Format EXACTLY as: NUMBER% | NAME | DESCRIPTION
+
+Example format (note specificity and detail):
+85% | Feline Panleukopenia Virus (Feline Parvovirus) | Classic presentation in young unvaccinated cats with profound vomiting, anorexia, and depression. Causes severe leukopenia and intestinal crypt necrosis. High mortality without aggressive supportive care. Check vaccination history and WBC count urgently. (Merck VM, BSAVA Manual)
+70% | Salmonella enterica Enteritis | Bacterial gastroenteritis causing acute vomiting and potential bloody diarrhea. More common in immunocompromised or stressed cats. Fecal culture recommended for confirmation. Zoonotic potential - warn owner. (Merck VM)
+45% | Acute Hepatic Lipidosis | Consider in overweight cats with sudden anorexia >3 days. Liver cannot mobilize fat stores leading to hepatocyte dysfunction. Check bilirubin and liver enzymes. Force-feeding critical for recovery. (BSAVA Manual)
+25% | Foreign Body Obstruction (Linear or Pyloric) | Possible if acute onset with unproductive vomiting, especially in young cats that play with string or thread. Check under tongue for linear foreign body anchor. Abdominal radiographs essential. (Merck VM)
+
+List 5-7 differentials, ranked by likelihood percentage (highest first).
 
 ## 🧪 DIAGNOSTIC STEPS  
 [List recommended tests in order of priority]
@@ -253,11 +323,31 @@ Structure your response with these EXACT section headers:
 ## ⚠️ RED FLAGS
 [List any urgent warning signs to monitor - if none, state "No immediate red flags identified"]
 
+
 ## 💊 TREATMENT RECOMMENDATIONS
-[Provide treatment plan with:
-- PRIMARY treatments (Egypt-available) with calculated doses for this ${formData.weight}kg ${formData.species}
-- Mark any ALTERNATIVE treatments clearly with 🔄
-- Show calculation: Weight → mg needed → ml volume]
+IMPORTANT: Use this EXACT format with CATEGORY markers for each treatment type:
+
+CATEGORY: Fluid Therapy
+[All fluid therapy drugs and details here]
+
+CATEGORY: Anti-emetic
+[All anti-emetic drugs and details here]
+
+CATEGORY: Gastroprotectant
+[All GI protection drugs and details here]
+
+CATEGORY: Antibiotic (if needed)
+[All antibiotic drugs and details here - only if indicated]
+
+CATEGORY: Monitoring
+[Monitoring parameters and frequency]
+
+For each drug include:
+- Drug name (Brand®) - PRIMARY or 🔄 ALTERNATIVE
+- Dose: X mg/kg route frequency
+- Calculation: dose × ${formData.weight}kg = X mg
+- Volume: X ml (of concentration)
+- Availability: ✅ Egypt-available or ⚠️ BSAVA Formulary
 
 Be thorough but organized. Each section must be clearly separated.`;
   };
@@ -320,6 +410,325 @@ Be thorough but organized. Each section must be clearly separated.`;
     }
 
     return sections;
+  };
+
+  // Parse differential diagnoses into structured data with percentages
+  const parseDifferentials = (text) => {
+    const diagnoses = [];
+    const lines = text.split('\n');
+
+    for (const line of lines) {
+      // Skip empty lines and headers
+      if (!line.trim() || line.startsWith('#') || line.includes('DIFFERENTIAL')) continue;
+
+      // Pattern 1: "85% | Pancreatitis | Description..."
+      const pipeMatch = line.match(/^[\d.\s]*\**\s*(\d+)\s*%?\s*\|\s*([^|]+)\s*\|\s*(.+)/);
+      if (pipeMatch) {
+        diagnoses.push({
+          percentage: parseInt(pipeMatch[1], 10),
+          name: pipeMatch[2].trim().replace(/\*\*/g, ''),
+          description: pipeMatch[3].trim()
+        });
+        continue;
+      }
+
+      // Pattern 2: "1. **Pancreatitis** (85%): Description" or "1. Pancreatitis (85%) - Description"
+      const numberedMatch = line.match(/^\d+\.\s*\**([^(\d*]+?)\**\s*[\(:–-]?\s*(\d+)\s*%\)?[:\-–]?\s*(.*)/);
+      if (numberedMatch) {
+        diagnoses.push({
+          percentage: parseInt(numberedMatch[2], 10),
+          name: numberedMatch[1].trim().replace(/\*\*/g, ''),
+          description: numberedMatch[3]?.trim() || ''
+        });
+        continue;
+      }
+
+      // Pattern 3: "**Pancreatitis (85% likely)**: Description" 
+      const boldMatch = line.match(/^[\s-]*\**([^(\d]+?)\**\s*\(?(\d+)\s*%[^)]*\)?:?\s*(.*)/);
+      if (boldMatch && boldMatch[2]) {
+        diagnoses.push({
+          percentage: parseInt(boldMatch[2], 10),
+          name: boldMatch[1].trim().replace(/\*\*/g, '').replace(/^[\d.\s-]+/, ''),
+          description: boldMatch[3]?.trim() || ''
+        });
+        continue;
+      }
+
+      // Pattern 4: "- Pancreatitis – 85%" 
+      const dashMatch = line.match(/^[\s*-]+\s*\**([^–\-\d%]+?)\**\s*[–\-:]\s*(\d+)\s*%[:\s]*(.*)/);
+      if (dashMatch) {
+        diagnoses.push({
+          percentage: parseInt(dashMatch[2], 10),
+          name: dashMatch[1].trim().replace(/\*\*/g, ''),
+          description: dashMatch[3]?.trim() || ''
+        });
+      }
+    }
+
+    // Sort by percentage descending
+    const sorted = diagnoses.sort((a, b) => b.percentage - a.percentage);
+
+    // Normalize percentages if the AI returned unrealistically low values
+    // If the max percentage is below 30%, scale all values up proportionally
+    if (sorted.length > 0) {
+      const maxPercentage = sorted[0].percentage;
+      if (maxPercentage < 30 && maxPercentage > 0) {
+        // Scale so that the top diagnosis gets ~75%
+        const scaleFactor = 75 / maxPercentage;
+        sorted.forEach((d, i) => {
+          // Apply scaling with diminishing returns for lower-ranked diagnoses
+          const scaled = Math.round(d.percentage * scaleFactor * (1 - i * 0.05));
+          // Ensure percentages stay within reasonable bounds
+          d.percentage = Math.min(95, Math.max(5, scaled));
+        });
+      } else if (maxPercentage === 0) {
+        // If all percentages are 0, assign decreasing values based on rank
+        sorted.forEach((d, i) => {
+          d.percentage = Math.max(10, 80 - (i * 15));
+        });
+      }
+    }
+
+    return sorted;
+  };
+
+  // Get color based on probability percentage
+  const getProbabilityColor = (percentage) => {
+    if (percentage >= 70) return { bg: 'bg-red-500', light: 'bg-red-100', text: 'text-red-700', label: 'High' };
+    if (percentage >= 50) return { bg: 'bg-orange-500', light: 'bg-orange-100', text: 'text-orange-700', label: 'Moderate' };
+    if (percentage >= 30) return { bg: 'bg-yellow-500', light: 'bg-yellow-100', text: 'text-yellow-700', label: 'Possible' };
+    return { bg: 'bg-green-500', light: 'bg-green-100', text: 'text-green-700', label: 'Less Likely' };
+  };
+
+  // Diagnosis Card Component with Probability Bar
+  const DiagnosisCard = ({ diagnosis, index }) => {
+    const colors = getProbabilityColor(diagnosis.percentage);
+
+    return (
+      <div
+        className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-300 animate-fadeIn"
+        style={{ animationDelay: `${index * 100}ms` }}
+      >
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className={`w-8 h-8 rounded-lg ${colors.light} flex items-center justify-center`}>
+              <span className={`font-bold text-sm ${colors.text}`}>{index + 1}</span>
+            </div>
+            <div>
+              <h4 className="font-bold text-gray-900 text-lg">{diagnosis.name}</h4>
+              <span className={`text-xs font-medium ${colors.text} ${colors.light} px-2 py-0.5 rounded-full`}>
+                {colors.label}
+              </span>
+            </div>
+          </div>
+          <div className={`text-2xl font-bold ${colors.text}`}>
+            {diagnosis.percentage}%
+          </div>
+        </div>
+
+        {/* Probability Bar */}
+        <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden mb-3">
+          <div
+            className={`h-full ${colors.bg} rounded-full`}
+            style={{
+              width: `${Math.min(diagnosis.percentage, 100)}%`,
+              transition: 'width 1s ease-out'
+            }}
+          />
+        </div>
+
+        {/* Description */}
+        {diagnosis.description && (
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {diagnosis.description}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  // Differentials Section with Cards
+  const DifferentialsSection = ({ content }) => {
+    const diagnoses = useMemo(() => parseDifferentials(content), [content]);
+    const config = SECTION_CONFIG.differentials;
+    const Icon = config.icon;
+    const isExpanded = expandedSections.differentials;
+
+    if (!content || content.trim().length === 0) return null;
+
+    return (
+      <div className={`rounded-2xl border-2 ${config.borderColor} overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl`}>
+        {/* Section Header */}
+        <button
+          onClick={() => toggleSection('differentials')}
+          className={`w-full bg-gradient-to-r ${config.gradient} px-5 py-4 flex items-center justify-between cursor-pointer`}
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-white/20 backdrop-blur-sm">
+              <Icon className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="font-bold text-white text-lg">{config.title}</h3>
+            {diagnoses.length > 0 && (
+              <span className="bg-white/25 text-white text-sm px-2 py-0.5 rounded-full">
+                {diagnoses.length} diagnoses
+              </span>
+            )}
+          </div>
+          <div className="p-1 rounded-full bg-white/20">
+            {isExpanded ? (
+              <ChevronUp className="w-5 h-5 text-white" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-white" />
+            )}
+          </div>
+        </button>
+
+        {/* Section Content */}
+        {isExpanded && (
+          <div className={`bg-gradient-to-br ${config.bgGradient} p-5`}>
+            {diagnoses.length > 0 ? (
+              <div className="grid gap-4">
+                {diagnoses.map((diagnosis, index) => (
+                  <DiagnosisCard key={index} diagnosis={diagnosis} index={index} />
+                ))}
+              </div>
+            ) : (
+              /* Fallback to markdown if no structured diagnoses found */
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 shadow-inner">
+                <div className="prose prose-slate max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-900 prose-li:text-gray-700 prose-ul:my-2 prose-li:my-1">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {content}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Treatment Section with Accordion - parses CATEGORY: markers
+  const TreatmentSection = ({ content }) => {
+    const config = SECTION_CONFIG.treatment;
+    const Icon = config.icon;
+    const isExpanded = expandedSections.treatment;
+    const [openCategories, setOpenCategories] = useState({});
+
+    // Parse treatment using CATEGORY: markers
+    const categories = useMemo(() => {
+      const result = [];
+      // Split by "CATEGORY:" marker
+      const parts = content.split(/CATEGORY:\s*/i);
+
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i].trim();
+        if (!part) continue;
+
+        // First line is the category title
+        const lines = part.split('\n');
+        const title = lines[0].trim();
+        const contentText = lines.slice(1).join('\n').trim();
+
+        if (title && contentText) {
+          result.push({ title, content: contentText });
+        }
+      }
+      return result;
+    }, [content]);
+
+    // Initialize all categories as open
+    useEffect(() => {
+      if (categories.length > 0 && Object.keys(openCategories).length === 0) {
+        const init = {};
+        categories.forEach((_, i) => { init[i] = true; });
+        setOpenCategories(init);
+      }
+    }, [categories]);
+
+    const getIcon = (title) => {
+      const t = title.toLowerCase();
+      if (t.includes('fluid')) return '💧';
+      if (t.includes('emetic')) return '🛡️';
+      if (t.includes('gastro') || t.includes('protect')) return '💊';
+      if (t.includes('antibiotic') || t.includes('antimicrobial')) return '💉';
+      if (t.includes('pain') || t.includes('analgesic')) return '🩹';
+      if (t.includes('monitor')) return '📊';
+      if (t.includes('diet') || t.includes('nutrition')) return '🍽️';
+      return '💊';
+    };
+
+    const getColor = (title) => {
+      const t = title.toLowerCase();
+      if (t.includes('fluid')) return 'border-blue-200 bg-blue-50';
+      if (t.includes('emetic')) return 'border-green-200 bg-green-50';
+      if (t.includes('gastro') || t.includes('protect')) return 'border-purple-200 bg-purple-50';
+      if (t.includes('antibiotic')) return 'border-red-200 bg-red-50';
+      if (t.includes('pain')) return 'border-orange-200 bg-orange-50';
+      if (t.includes('monitor')) return 'border-cyan-200 bg-cyan-50';
+      return 'border-gray-200 bg-gray-50';
+    };
+
+    if (!content?.trim()) return null;
+
+    return (
+      <div className={`rounded-2xl border-2 ${config.borderColor} overflow-hidden shadow-lg`}>
+        <button
+          onClick={() => toggleSection('treatment')}
+          className={`w-full bg-gradient-to-r ${config.gradient} px-5 py-4 flex items-center justify-between`}
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-white/20">
+              <Icon className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="font-bold text-white text-lg">{config.title}</h3>
+            {categories.length > 0 && (
+              <span className="bg-white/25 text-white text-sm px-2 py-0.5 rounded-full">
+                {categories.length} categories
+              </span>
+            )}
+          </div>
+          {isExpanded ? <ChevronUp className="w-5 h-5 text-white" /> : <ChevronDown className="w-5 h-5 text-white" />}
+        </button>
+
+        {isExpanded && (
+          <div className={`bg-gradient-to-br ${config.bgGradient} p-4`}>
+            {categories.length > 0 ? (
+              <div className="space-y-3">
+                {categories.map((cat, i) => (
+                  <div key={i} className={`rounded-xl border-2 ${getColor(cat.title)} overflow-hidden`}>
+                    <button
+                      onClick={() => setOpenCategories(prev => ({ ...prev, [i]: !prev[i] }))}
+                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">{getIcon(cat.title)}</span>
+                        <span className="font-semibold text-gray-800">{cat.title}</span>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${openCategories[i] ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openCategories[i] && (
+                      <div className="px-4 pb-4 bg-white/70">
+                        <div className="prose prose-sm max-w-none prose-strong:text-gray-900">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{cat.content}</ReactMarkdown>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Fallback to simple markdown if no CATEGORY: markers found */
+              <div className="bg-white/70 rounded-xl p-5">
+                <div className="prose prose-slate max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   };
 
   const generateDifferentials = async () => {
@@ -785,7 +1194,7 @@ Be thorough but organized. Each section must be clearly separated.`;
 
         {/* Parsed Sections */}
         {sections.differentials && (
-          <SectionCard sectionKey="differentials" content={sections.differentials} />
+          <DifferentialsSection content={sections.differentials} />
         )}
         {sections.diagnostics && (
           <SectionCard sectionKey="diagnostics" content={sections.diagnostics} />
@@ -794,7 +1203,7 @@ Be thorough but organized. Each section must be clearly separated.`;
           <SectionCard sectionKey="redFlags" content={sections.redFlags} />
         )}
         {sections.treatment && (
-          <SectionCard sectionKey="treatment" content={sections.treatment} />
+          <TreatmentSection content={sections.treatment} />
         )}
 
         {/* Fallback for unparsed content */}
