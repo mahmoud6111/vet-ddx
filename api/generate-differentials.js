@@ -33,6 +33,9 @@ export default async function handler(req, res) {
     } else if (model === 'gemini') {
       // Use Google Gemini API
       responseText = await callGeminiAPI(prompt);
+    } else if (model === 'groq') {
+      // Use Groq API for Llama 3.3 70B
+      responseText = await callGroqAPI(prompt);
     } else if (model === 'both') {
       // Call both models for comparison
       const [geminiResult, mimoResult] = await Promise.allSettled([
@@ -155,6 +158,43 @@ async function callMiMoAPI(prompt) {
     const error = await response.json();
     console.error('OpenRouter API Error:', error);
     throw new Error(error.error?.message || 'OpenRouter API error');
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || 'No response generated';
+}
+
+// Groq API call for Llama 3.3 70B
+async function callGroqAPI(prompt) {
+  const apiKey = process.env.GROQ_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Groq API key not configured');
+  }
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 8192,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    console.error('Groq API Error:', error);
+    throw new Error(error.error?.message || 'Groq API error');
   }
 
   const data = await response.json();

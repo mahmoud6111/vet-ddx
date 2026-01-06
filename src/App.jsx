@@ -24,6 +24,15 @@ const MODELS = {
     bgColor: 'bg-gradient-to-r from-purple-50 to-pink-50',
     borderColor: 'border-purple-200'
   },
+  groq: {
+    id: 'groq',
+    name: 'Groq Llama 3.3 70B',
+    description: 'Ultra-fast inference & reasoning',
+    icon: '🤖',
+    color: 'from-teal-500 to-cyan-500',
+    bgColor: 'bg-gradient-to-r from-teal-50 to-cyan-50',
+    borderColor: 'border-teal-200'
+  },
   both: {
     id: 'both',
     name: 'Dual Analysis',
@@ -1439,9 +1448,10 @@ Be thorough but organized. Each section must be clearly separated.`;
                 <h2 className="text-xl font-bold text-gray-900">Select AI Model</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <ModelCard modelKey="gemini" />
                 <ModelCard modelKey="mimo" />
+                <ModelCard modelKey="groq" />
                 <ModelCard modelKey="both" />
               </div>
             </div>
